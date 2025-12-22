@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using System.IO;
 
 namespace ISI_TexValid
 {
@@ -7,6 +7,16 @@ namespace ISI_TexValid
     {
         static void Main(string[] _)
         {
+            string path = Environment.CurrentDirectory;
+            Console.WriteLine($"Path: {path}");
+            var textures = Directory.EnumerateFiles(path);
+            foreach (var texture in textures)
+            {
+                if (texture.EndsWith(".BMP"))
+                {
+                    Console.WriteLine($"File: {texture}");
+                }
+            }
         }
     }
 }
