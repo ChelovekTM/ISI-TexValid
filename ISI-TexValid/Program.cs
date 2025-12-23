@@ -1,9 +1,7 @@
 ﻿using ISI_TexValid.TextureProcessors;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 
 namespace ISI_TexValid
 {
@@ -13,7 +11,6 @@ namespace ISI_TexValid
         {
             // Get the current directory and load all files
             string path = Environment.CurrentDirectory;
-            Console.WriteLine(path);
             string[] texturesBmp = Directory.GetFiles(path,"*.bmp");
             BitmapChecker[] textures = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
 
@@ -23,7 +20,7 @@ namespace ISI_TexValid
             {       
                 if (texture.fileName.EndsWith(".bmp"))
                 {
-                    if (!BitmapChecker.Valid(texture))
+                    if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture))
                     {
                         invalidTextures.Add(texture);
                     }
@@ -38,9 +35,19 @@ namespace ISI_TexValid
                 }
             }
 
+            // Output invalid textures to output.txt
+            File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             foreach (BitmapChecker bitmap in invalidTextures)
             {
-                Console.WriteLine($"{bitmap.fileName}, {bitmap.width}, {bitmap.height}, {bitmap.pixelFormat}");
+                if (!BitmapChecker.ValidDimensions(bitmap))
+                {
+                    File.AppendAllText("output.txt", $"Invalid Texture: {bitmap.fileName}, Width: {bitmap.width}, Height: {bitmap.height}\n");
+                }
+                if (!BitmapChecker.ValidPixelFormat(bitmap))
+                {
+                    File.AppendAllText("output.txt", $"Incorrect Format: {bitmap.fileName}, {bitmap.pixelFormat}\n");
+                }
+                File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
         }
     }
