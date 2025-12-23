@@ -13,14 +13,14 @@ namespace ISI_TexValid
             string path = Environment.CurrentDirectory;
             string[] texturesBmp = Directory.GetFiles(path, "*.bmp");
             string[] texturesTga = Directory.GetFiles(path, "*.tga");
-            string[] texturesDds = Directory.GetFiles(path, "*.dds");
+            // string[] texturesDds = Directory.GetFiles(path, "*.dds");
             BitmapChecker[] texturesBitmap = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
-            // TargaChecker[] texturesTarga = Array.ConvertAll(texturesTga, texture => new TargaChecker(texture));
+            TargaChecker[] texturesTarga = Array.ConvertAll(texturesTga, texture => new TargaChecker(texture));
             // DirectDrawChecker[] texturesDds = Array.ConvertAll(texturesDds, texture => new DirectDrawChecker(texture));
 
             // Process each texture based on its file extension
             List<BitmapChecker> invalidBitmaps = new List<BitmapChecker>();
-            // List<TargaChecker> invalidTargas = new List<TargaChecker>();
+            List<TargaChecker> invalidTargas = new List<TargaChecker>();
             // List<DirectDrawChecker> invalidDirectDraws = new List<DirectDrawChecker>();
 
             foreach (BitmapChecker texture in texturesBitmap)
@@ -28,6 +28,13 @@ namespace ISI_TexValid
                 if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture))
                 {
                     invalidBitmaps.Add(texture);
+                }
+            }
+            foreach (TargaChecker texture in texturesTarga)
+            {
+                if (!TargaChecker.ValidDimensions(texture))
+                {
+                    invalidTargas.Add(texture);
                 }
             }
 
@@ -43,6 +50,12 @@ namespace ISI_TexValid
                 {
                     File.AppendAllText("output.txt", $"Incorrect Format: {bitmap.fileName}, {bitmap.pixelFormat}\n");
                 }
+                File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
+            }
+
+            foreach (TargaChecker targa in invalidTargas)
+            {
+                File.AppendAllText("output.txt", $"Invalid Texture: {targa.fileName}, Width: {targa.width}, Height: {targa.height}\n");
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
         }
