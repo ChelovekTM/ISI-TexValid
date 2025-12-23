@@ -43,5 +43,14 @@ namespace ISI_TexValid.TextureProcessors
             }
             return false;
         }
+
+        public static bool FileNameLength(TargaChecker targa)
+        {
+            if (targa.fileName.Length <= 20)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

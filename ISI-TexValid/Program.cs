@@ -26,14 +26,14 @@ namespace ISI_TexValid
 
             foreach (BitmapChecker texture in texturesBitmap)
             {
-                if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture))
+                if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture) || !BitmapChecker.FileNameLength(texture))
                 {
                     invalidBitmaps.Add(texture);
                 }
             }
             foreach (TargaChecker texture in texturesTarga)
             {
-                if (!TargaChecker.ValidDimensions(texture))
+                if (!TargaChecker.ValidDimensions(texture) || !TargaChecker.FileNameLength(texture))
                 {
                     invalidTargas.Add(texture);
                 }
@@ -52,6 +52,10 @@ namespace ISI_TexValid
                 {
                     File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\n");
                 }
+                if (!BitmapChecker.FileNameLength(bitmap))
+                {
+                    File.AppendAllText("output.txt", $"Warning: {bitmap.fileName} file name is too long\n");
+                }
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
 
@@ -65,6 +69,10 @@ namespace ISI_TexValid
                 if ((int)targa.isCompressed == 10)
                 {
                     File.AppendAllText("output.txt", $"Info: {targa.fileName} is using RLE-Compression\n");
+                }
+                if (!TargaChecker.FileNameLength(targa))
+                {
+                    File.AppendAllText("output.txt", $"Warning: {targa.fileName} file name is too long\n");
                 }
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }

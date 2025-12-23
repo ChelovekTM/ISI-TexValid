@@ -87,5 +87,14 @@ namespace ISI_TexValid.TextureProcessors
             }
             return "an unknown format bitmap";
         }
+
+        public static bool FileNameLength(BitmapChecker bitmap)
+        {
+            if (bitmap.fileName.Length <= 20)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
