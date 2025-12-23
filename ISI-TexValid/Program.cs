@@ -11,33 +11,29 @@ namespace ISI_TexValid
         {
             // Get the current directory and load all files
             string path = Environment.CurrentDirectory;
-            string[] texturesBmp = Directory.GetFiles(path,"*.bmp");
-            BitmapChecker[] textures = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
+            string[] texturesBmp = Directory.GetFiles(path, "*.bmp");
+            string[] texturesTga = Directory.GetFiles(path, "*.tga");
+            string[] texturesDds = Directory.GetFiles(path, "*.dds");
+            BitmapChecker[] texturesBitmap = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
+            // TargaChecker[] texturesTarga = Array.ConvertAll(texturesTga, texture => new TargaChecker(texture));
+            // DirectDrawChecker[] texturesDds = Array.ConvertAll(texturesDds, texture => new DirectDrawChecker(texture));
 
             // Process each texture based on its file extension
-            List<BitmapChecker> invalidTextures = new List<BitmapChecker>();
-            foreach (BitmapChecker texture in textures)
-            {       
-                if (texture.fileName.EndsWith(".bmp"))
+            List<BitmapChecker> invalidBitmaps = new List<BitmapChecker>();
+            // List<TargaChecker> invalidTargas = new List<TargaChecker>();
+            // List<DirectDrawChecker> invalidDirectDraws = new List<DirectDrawChecker>();
+
+            foreach (BitmapChecker texture in texturesBitmap)
+            {
+                if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture))
                 {
-                    if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture))
-                    {
-                        invalidTextures.Add(texture);
-                    }
-                }
-                //else if (texture.ToLower().EndsWith(".tga"))
-                {
-                    // Process Targa file
-                }
-                //else if (texture.ToLower().EndsWith(".dds"))
-                {
-                    // Process DirectDraw Surface file
+                    invalidBitmaps.Add(texture);
                 }
             }
 
             // Output invalid textures to output.txt
             File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
-            foreach (BitmapChecker bitmap in invalidTextures)
+            foreach (BitmapChecker bitmap in invalidBitmaps)
             {
                 if (!BitmapChecker.ValidDimensions(bitmap))
                 {
