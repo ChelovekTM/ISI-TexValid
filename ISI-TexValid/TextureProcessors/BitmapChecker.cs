@@ -58,5 +58,34 @@ namespace ISI_TexValid.TextureProcessors
             }
             return false;
         }
+
+        public static string PixelFormat(BitmapChecker bitmap)
+        {
+            if (bitmap.pixelFormat.Contains("Format8"))
+            {
+                return "an 8-bit bitmap";
+            }
+            else if (bitmap.pixelFormat.Contains("Format16"))
+            {
+                return "a 16-bit bitmap";
+            }
+            else if (bitmap.pixelFormat.Contains("Format24"))
+            {
+                return "a 24-bit bitmap";
+            }
+            else if (bitmap.pixelFormat.Contains("Format32"))
+            {
+                return "a 32-bit bitmap";
+            }
+            else if (bitmap.pixelFormat.Contains("Format48"))
+            {
+                return "a 48-bit bitmap";
+            }
+            else if (bitmap.pixelFormat.Contains("Format64"))
+            {
+                return "a 64-bit bitmap";
+            }
+            return "an unknown format bitmap";
+        }
     }
 }

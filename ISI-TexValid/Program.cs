@@ -50,7 +50,7 @@ namespace ISI_TexValid
                 }
                 if (!BitmapChecker.ValidPixelFormat(bitmap))
                 {
-                    File.AppendAllText("output.txt", $"Incorrect Format: {bitmap.fileName}, {bitmap.pixelFormat}\n");
+                    File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\n");
                 }
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
