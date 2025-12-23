@@ -1,6 +1,7 @@
 ﻿using ISI_TexValid.TextureProcessors;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace ISI_TexValid
@@ -42,9 +43,10 @@ namespace ISI_TexValid
             File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             foreach (BitmapChecker bitmap in invalidBitmaps)
             {
+                File.AppendAllText("output.txt", $"Texture: {bitmap.fileName}\n");
                 if (!BitmapChecker.ValidDimensions(bitmap))
                 {
-                    File.AppendAllText("output.txt", $"Invalid Texture: {bitmap.fileName}, Width: {bitmap.width}, Height: {bitmap.height}\n");
+                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {bitmap.width}, Height: {bitmap.height}\n");
                 }
                 if (!BitmapChecker.ValidPixelFormat(bitmap))
                 {
@@ -55,7 +57,15 @@ namespace ISI_TexValid
 
             foreach (TargaChecker targa in invalidTargas)
             {
-                File.AppendAllText("output.txt", $"Invalid Texture: {targa.fileName}, Width: {targa.width}, Height: {targa.height}\n");
+                File.AppendAllText("output.txt", $"Texture: {targa.fileName}\n");
+                if (!TargaChecker.ValidDimensions(targa))
+                {
+                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {targa.width}, Height: {targa.height}\n");
+                }
+                if ((int)targa.isCompressed == 10)
+                {
+                    File.AppendAllText("output.txt", $"Info: {targa.fileName} is using RLE-Compression\n");
+                }
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
         }

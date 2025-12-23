@@ -9,6 +9,7 @@ namespace ISI_TexValid.TextureProcessors
         public string fileName;
         public int width;
         public int height;
+        public TgaImageType isCompressed;
 
         public TargaChecker(string texture)
         {
@@ -16,6 +17,7 @@ namespace ISI_TexValid.TextureProcessors
             fileName = Path.GetFileName(texture).ToLower();
             width = targa.Width;
             height = targa.Height;
+            isCompressed = targa.Header.ImageType;
         }
 
         public static bool ValidDimensions(TargaChecker targa)
