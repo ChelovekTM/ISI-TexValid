@@ -1,55 +1,25 @@
 ﻿using System;
-using System.IO;
 using System.Drawing;
 
 namespace ISI_TexValid.TextureProcessors
 {
-    internal class BitmapChecker
+    internal class BitmapChecker : TextureChecker
     {
-        public string fileName;
-        public int width;
-        public int height;
         public string pixelFormat;
 
-        public BitmapChecker(string texture)
+        public BitmapChecker(string texture) : base(texture)
         {
             Bitmap bitmap = new Bitmap(texture);
-            fileName = Path.GetFileName(texture).ToLower();
             width = bitmap.Width;
             height = bitmap.Height;
             pixelFormat = bitmap.PixelFormat.ToString();
         }
 
         /// <summary>
-        /// Checks if the bitmap has valid dimensions. Valid dimensions are powers of two between 4 and 2048 (inclusive).
+        /// Checks whether the bitmap is 24-bit RGB format
         /// </summary>
-        /// <remarks>Note that powers of two above 2048 are considered invalid as trust me man you do not need THAT many pixels.</remarks>
-        /// <param name="bitmap">The texture to be validated</param>
-        /// <returns>True if the texture is valid, false if it has incorrect dimensions</returns>
-        public static bool ValidDimensions(BitmapChecker bitmap)
-        {
-            bool foundWidth = false;
-            bool foundHeight = false;
-
-            for (int i = 2; i <= 11; i++)
-            {
-                if (Math.Pow(2,i) == bitmap.width)
-                {
-                    foundWidth = true;
-                }
-                if (Math.Pow(2,i) == bitmap.height)
-                {
-                    foundHeight = true;
-                }
-            }
-
-            if (foundWidth && foundHeight)
-            {
-                return true;
-            }
-            return false;
-        }
-
+        /// <param name="bitmap">The bitmap texture</param>
+        /// <returns>Returs true if it is, false otherwise</returns>
         public static bool ValidPixelFormat(BitmapChecker bitmap)
         {
             if (bitmap.pixelFormat == "Format24bppRgb")
@@ -59,6 +29,11 @@ namespace ISI_TexValid.TextureProcessors
             return false;
         }
 
+        /// <summary>
+        /// Gives a string describing the Pixel Format of the bitmap
+        /// </summary>
+        /// <param name="bitmap">The bitmap texture</param>
+        /// <returns>A string containing info of the Pixel Format</returns>
         public static string PixelFormat(BitmapChecker bitmap)
         {
             if (bitmap.pixelFormat.Contains("Format8"))
@@ -86,15 +61,6 @@ namespace ISI_TexValid.TextureProcessors
                 return "a 64-bit bitmap";
             }
             return "an unknown format bitmap";
-        }
-
-        public static bool FileNameLength(BitmapChecker bitmap)
-        {
-            if (bitmap.fileName.Length <= 20)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

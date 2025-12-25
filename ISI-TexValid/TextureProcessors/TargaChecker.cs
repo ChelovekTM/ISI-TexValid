@@ -1,56 +1,44 @@
-﻿using System;
-using System.IO;
-using TGASharpLib;
+﻿using TGASharpLib; // Written by Olexandr Zelenskyi: https://github.com/ALEXGREENALEX/TGASharpLib.git
 
 namespace ISI_TexValid.TextureProcessors
 {
-    internal class TargaChecker
+    internal class TargaChecker : TextureChecker
     {
-        public string fileName;
-        public int width;
-        public int height;
         public TgaImageType isCompressed;
 
-        public TargaChecker(string texture)
+        public TargaChecker(string texture) : base(texture)
         {
             TGA targa = new TGA(texture);
-            fileName = Path.GetFileName(texture).ToLower();
             width = targa.Width;
             height = targa.Height;
             isCompressed = targa.Header.ImageType;
         }
 
-        public static bool ValidDimensions(TargaChecker targa)
+        /// <summary>
+        /// Checks whether the Targa file is compressed or uncompressed
+        /// </summary>
+        /// <param name="targa">The Targa texture</param>
+        /// <returns>True if the texture compressed, otherwise false</returns>
+        public static bool IsCompressed(TargaChecker targa)
         {
-            bool foundWidth = false;
-            bool foundHeight = false;
-
-            for (int i = 2; i <= 11; i++)
-            {
-                if (Math.Pow(2, i) == targa.width)
-                {
-                    foundWidth = true;
-                }
-                if (Math.Pow(2, i) == targa.height)
-                {
-                    foundHeight = true;
-                }
-            }
-
-            if (foundWidth && foundHeight)
-            {
-                return true;
-            }
-            return false;
+            return (int)targa.isCompressed == 10;
         }
 
-        public static bool FileNameLength(TargaChecker targa)
+        /// <summary>
+        /// Gives a string indicating whether the Targa file is compressed or uncompressed
+        /// </summary>
+        /// <param name="targa">The Targa texture</param>
+        /// <returns>A string containing whether the file is compressed or uncompressed</returns>
+        public static string CompressionType(TargaChecker targa)
         {
-            if (targa.fileName.Length <= 20)
+            if ((int)targa.isCompressed == 10)
             {
-                return true;
+                return "compressed";
             }
-            return false;
+            else
+            {
+                return "uncompressed";
+            }
         }
     }
 }

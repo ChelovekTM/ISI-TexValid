@@ -1,7 +1,6 @@
 ﻿using ISI_TexValid.TextureProcessors;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 
 namespace ISI_TexValid
@@ -15,66 +14,58 @@ namespace ISI_TexValid
             string[] texturesBmp = Directory.GetFiles(path, "*.bmp");
             string[] texturesTga = Directory.GetFiles(path, "*.tga");
             // string[] texturesDds = Directory.GetFiles(path, "*.dds");
-            BitmapChecker[] texturesBitmap = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
-            TargaChecker[] texturesTarga = Array.ConvertAll(texturesTga, texture => new TargaChecker(texture));
-            // DirectDrawChecker[] texturesDds = Array.ConvertAll(texturesDds, texture => new DirectDrawChecker(texture));
 
-            // Process each texture based on its file extension
-            List<BitmapChecker> invalidBitmaps = new List<BitmapChecker>();
-            List<TargaChecker> invalidTargas = new List<TargaChecker>();
-            // List<DirectDrawChecker> invalidDirectDraws = new List<DirectDrawChecker>();
+            // Load textures
+            TextureChecker[] texturesBitmap = Array.ConvertAll(texturesBmp, texture => new BitmapChecker(texture));
+            TextureChecker[] texturesTarga = Array.ConvertAll(texturesTga, texture => new TargaChecker(texture));
+            // TextureChecker[] texturesDirectDraw = Array.ConvertAll(texturesDds, texture => new DirectDrawChecker(texture));
 
-            foreach (BitmapChecker texture in texturesBitmap)
-            {
-                if (!BitmapChecker.ValidDimensions(texture) || !BitmapChecker.ValidPixelFormat(texture) || !BitmapChecker.FileNameLength(texture))
-                {
-                    invalidBitmaps.Add(texture);
-                }
-            }
-            foreach (TargaChecker texture in texturesTarga)
-            {
-                if (!TargaChecker.ValidDimensions(texture) || !TargaChecker.FileNameLength(texture))
-                {
-                    invalidTargas.Add(texture);
-                }
-            }
+            // Process invalid textures
+            List<TextureChecker> invalidTextures = new List<TextureChecker>();
+            ProcessTextures(texturesBitmap, invalidTextures);
+            ProcessTextures(texturesTarga, invalidTextures);
+            // ProcessTextures(texturesDirectDraw, invalidTextures);
 
             // Output invalid textures to output.txt
             File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
-            foreach (BitmapChecker bitmap in invalidBitmaps)
+            foreach (TextureChecker texture in invalidTextures)
             {
-                File.AppendAllText("output.txt", $"Texture: {bitmap.fileName}\n");
-                if (!BitmapChecker.ValidDimensions(bitmap))
+                File.AppendAllText("output.txt", $"Texture: {texture.fileName}\n");
+                if (!TextureChecker.ValidDimensions(texture))
                 {
-                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {bitmap.width}, Height: {bitmap.height}\n");
+                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {texture.width}, Height: {texture.height}\n");
                 }
-                if (!BitmapChecker.ValidPixelFormat(bitmap))
+                if (!TextureChecker.FileNameLength(texture))
+                {
+                    File.AppendAllText("output.txt", $"Warning: {texture.fileName} file name may be too long\n");
+                }
+                if (texture is BitmapChecker bitmap && !BitmapChecker.ValidPixelFormat(bitmap))
                 {
                     File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\n");
                 }
-                if (!BitmapChecker.FileNameLength(bitmap))
+                if (texture is TargaChecker targa && TargaChecker.IsCompressed(targa))
                 {
-                    File.AppendAllText("output.txt", $"Warning: {bitmap.fileName} file name is too long\n");
+                    File.AppendAllText("output.txt", $"Info: {targa.fileName} is {TargaChecker.CompressionType(targa)}\n");
                 }
                 File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
+        }
 
-            foreach (TargaChecker targa in invalidTargas)
+        /// <summary>
+        /// Checks each texture for validity and adds invalid ones to a list
+        /// </summary>
+        /// <param name="textures">The input array containing textures</param>
+        /// <param name="invalidTextures">The list to add invalid textures to</param>
+        static void ProcessTextures(TextureChecker[] textures, List<TextureChecker> invalidTextures)
+        {
+            foreach (TextureChecker texture in textures)
             {
-                File.AppendAllText("output.txt", $"Texture: {targa.fileName}\n");
-                if (!TargaChecker.ValidDimensions(targa))
+                if (!TextureChecker.ValidDimensions(texture) || !TextureChecker.FileNameLength(texture) ||
+                    (texture is BitmapChecker bitmap && !BitmapChecker.ValidPixelFormat(bitmap)) || 
+                    (texture is TargaChecker targa && TargaChecker.IsCompressed(targa)))
                 {
-                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {targa.width}, Height: {targa.height}\n");
+                    invalidTextures.Add(texture);
                 }
-                if ((int)targa.isCompressed == 10)
-                {
-                    File.AppendAllText("output.txt", $"Info: {targa.fileName} is using RLE-Compression\n");
-                }
-                if (!TargaChecker.FileNameLength(targa))
-                {
-                    File.AppendAllText("output.txt", $"Warning: {targa.fileName} file name is too long\n");
-                }
-                File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
             }
         }
     }
