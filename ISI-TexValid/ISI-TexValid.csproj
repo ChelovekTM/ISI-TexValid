@@ -50,6 +50,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextureProcessors\BitmapChecker.cs" />
+    <Compile Include="TextureProcessors\DDSImage.cs" />
+    <Compile Include="TextureProcessors\DirectDrawChecker.cs" />
+    <Compile Include="TextureProcessors\FourCC.cs" />
     <Compile Include="TextureProcessors\TargaChecker.cs" />
     <Compile Include="TextureProcessors\TextureChecker.cs" />
     <Compile Include="TextureProcessors\TGASharpLib.cs" />
