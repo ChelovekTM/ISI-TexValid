@@ -26,6 +26,8 @@ namespace ISI_TexValid.TextureProcessors
             {
                 return true;
             }
+
+            bitmap.errorLevel += 1;
             return false;
         }
 

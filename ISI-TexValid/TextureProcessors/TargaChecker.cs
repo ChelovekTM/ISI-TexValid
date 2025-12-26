@@ -19,9 +19,15 @@ namespace ISI_TexValid.TextureProcessors
         /// </summary>
         /// <param name="targa">The Targa texture</param>
         /// <returns>True if the texture compressed, otherwise false</returns>
-        public static bool IsCompressed(TargaChecker targa)
+        public static bool Uncompressed(TargaChecker targa)
         {
-            return (int)targa.isCompressed == 10;
+            if ((int)targa.isCompressed == 2)
+            {
+                return true;
+            }
+
+            targa.errorLevel += 1;
+            return false;
         }
 
         /// <summary>

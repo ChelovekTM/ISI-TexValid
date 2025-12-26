@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ISI_TexValid
 {
@@ -26,9 +27,12 @@ namespace ISI_TexValid
             ProcessTextures(texturesTarga, invalidTextures);
             // ProcessTextures(texturesDirectDraw, invalidTextures);
 
+            // Order invalid textures by error level so that the more severe errors appear first in the output
+            List<TextureChecker> orderedTextures = invalidTextures.OrderByDescending(texture => texture.errorLevel).ToList();
+
             // Output invalid textures to output.txt
             File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
-            foreach (TextureChecker texture in invalidTextures)
+            foreach (TextureChecker texture in orderedTextures)
             {
                 File.AppendAllText("output.txt", $"Texture: {texture.fileName}\n");
                 if (!TextureChecker.ValidDimensions(texture))
@@ -43,7 +47,7 @@ namespace ISI_TexValid
                 {
                     File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\n");
                 }
-                if (texture is TargaChecker targa && TargaChecker.IsCompressed(targa))
+                if (texture is TargaChecker targa && !TargaChecker.Uncompressed(targa))
                 {
                     File.AppendAllText("output.txt", $"Info: {targa.fileName} is {TargaChecker.CompressionType(targa)}\n");
                 }
@@ -54,15 +58,15 @@ namespace ISI_TexValid
         /// <summary>
         /// Checks each texture for validity and adds invalid ones to a list
         /// </summary>
-        /// <param name="textures">The input array containing textures</param>
+        /// <param name="textures">The input array contsaining textures</param>
         /// <param name="invalidTextures">The list to add invalid textures to</param>
         static void ProcessTextures(TextureChecker[] textures, List<TextureChecker> invalidTextures)
         {
             foreach (TextureChecker texture in textures)
             {
-                if (!TextureChecker.ValidDimensions(texture) || !TextureChecker.FileNameLength(texture) ||
-                    (texture is BitmapChecker bitmap && !BitmapChecker.ValidPixelFormat(bitmap)) || 
-                    (texture is TargaChecker targa && TargaChecker.IsCompressed(targa)))
+                if (!TextureChecker.ValidDimensions(texture) | !TextureChecker.FileNameLength(texture) |
+                    (texture is BitmapChecker bitmap && !BitmapChecker.ValidPixelFormat(bitmap)) | 
+                    (texture is TargaChecker targa && !TargaChecker.Uncompressed(targa)))
                 {
                     invalidTextures.Add(texture);
                 }

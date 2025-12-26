@@ -8,10 +8,12 @@ namespace ISI_TexValid.TextureProcessors
         public string fileName;
         public int width;
         public int height;
+        public int errorLevel;
 
         public TextureChecker(string texture)
         {
             fileName = Path.GetFileName(texture).ToLower();
+            errorLevel = 0;
         }
 
         /// <summary>
@@ -37,7 +39,13 @@ namespace ISI_TexValid.TextureProcessors
                 }
             }
 
-            return foundWidth && foundHeight;
+            if (foundWidth && foundHeight)
+            {
+                return true;
+            }
+
+            texture.errorLevel += 3;
+            return false;
         }
 
         /// <summary>
@@ -47,7 +55,13 @@ namespace ISI_TexValid.TextureProcessors
         /// <returns>True if the file name length is less than or equal to 20 characters, otherwise false</returns>
         public static bool FileNameLength(TextureChecker texture)
         {
-            return texture.fileName.Length <= 20;
+            if (texture.fileName.Length <= 20)
+            {
+               return true;
+            }
+
+            texture.errorLevel += 2;
+            return false;
         }
     }
 }
