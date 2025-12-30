@@ -4,7 +4,8 @@
 
 The tool scans all supported texture files in its directory, checks their dimensions, and outputs a detailed report to an `output.txt` file.
 
-## REQUIRES .NET FRAMEWORK 4.8.1
+**REQUIRES .NET FRAMEWORK 4.8.1**
+
 ---
 
 ## Features
@@ -25,6 +26,7 @@ The tool scans all supported texture files in its directory, checks their dimens
 - `.bmp`*
 - `.tga`
 - `.dds`
+
 NOTE: Apparently I accidentally added support for .png and .jpg files that have .bmp extensions. In this case your files may get flagged incorrectly (but then again, you are using a different file extentsion,)
 
 ---
