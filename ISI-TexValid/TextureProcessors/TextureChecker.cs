@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ISI_TexValid.TextureProcessors
+namespace TextureProcessors
 {
     internal class TextureChecker
     {
@@ -49,13 +49,13 @@ namespace ISI_TexValid.TextureProcessors
         }
 
         /// <summary>
-        /// Checks whether the file name of the specified texture is 20 characters or fewer
+        /// Checks whether the file name of the specified texture is 28 characters or fewer
         /// </summary>
         /// <param name="texture">The texture file</param>
-        /// <returns>True if the file name length is less than or equal to 20 characters, otherwise false</returns>
+        /// <returns>True if the file name length is less than or equal to 28 characters, otherwise false</returns>
         public static bool FileNameLength(TextureChecker texture)
         {
-            if (texture.fileName.Length <= 20)
+            if (texture.fileName.Length <= 28)
             {
                return true;
             }

@@ -1,6 +1,6 @@
 ﻿using DDSParser; // Written by jmschrack: https://github.com/jmschrack/DDS-Image-Wrapper.git
 
-namespace ISI_TexValid.TextureProcessors
+namespace TextureProcessors
 {
     internal class DirectDrawChecker : TextureChecker
     {

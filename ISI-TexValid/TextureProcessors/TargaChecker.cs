@@ -1,6 +1,6 @@
 ﻿using TGASharpLib; // Written by Olexandr Zelenskyi: https://github.com/ALEXGREENALEX/TGASharpLib.git
 
-namespace ISI_TexValid.TextureProcessors
+namespace TextureProcessors
 {
     internal class TargaChecker : TextureChecker
     {

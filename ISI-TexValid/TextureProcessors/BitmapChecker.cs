@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ISI_TexValid.TextureProcessors
+namespace TextureProcessors
 {
     internal class BitmapChecker : TextureChecker
     {

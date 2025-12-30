@@ -1,4 +1,4 @@
-﻿using ISI_TexValid.TextureProcessors;
+﻿using TextureProcessors;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,8 @@ namespace ISI_TexValid
         {
             // Get the current directory and load all files
             string path = Environment.CurrentDirectory;
-            string[] texturesBmp = Directory.GetFiles(path, "*.bmp");
+            Console.WriteLine("Loading Textures...");
+            string[] texturesBmp = Directory.GetFiles(path, "*.bmp"); // this also works for .png and .jpg files labeled as .bmp
             string[] texturesTga = Directory.GetFiles(path, "*.tga");
             string[] texturesDds = Directory.GetFiles(path, "*.dds");
 
@@ -22,6 +23,7 @@ namespace ISI_TexValid
             TextureChecker[] texturesDirectDraw = Array.ConvertAll(texturesDds, texture => new DirectDrawChecker(texture));
 
             // Process invalid textures
+            Console.WriteLine("Processing Textures...");
             List<TextureChecker> invalidTextures = new List<TextureChecker>();
             ProcessTextures(texturesBitmap, invalidTextures);
             ProcessTextures(texturesTarga, invalidTextures);
@@ -31,35 +33,36 @@ namespace ISI_TexValid
             List<TextureChecker> orderedTextures = invalidTextures.OrderByDescending(texture => texture.errorLevel).ToList();
 
             // Output invalid textures to output.txt
-            File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
+            Console.WriteLine("Writing Output...");
+            File.WriteAllText("output.txt", "---------------------------------------------------------------------------------------------\r\n");
             foreach (TextureChecker texture in orderedTextures)
             {
-                File.AppendAllText("output.txt", $"Texture: {texture.fileName}\n");
+                File.AppendAllText("output.txt", $"Texture: {texture.fileName}\r\n");
                 if (!TextureChecker.ValidDimensions(texture))
                 {
-                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {texture.width}, Height: {texture.height}\n");
+                    File.AppendAllText("output.txt", $"Invalid Dimensions: Width: {texture.width}, Height: {texture.height}\r\n");
                 }
                 if (!TextureChecker.FileNameLength(texture))
                 {
-                    File.AppendAllText("output.txt", $"Warning: {texture.fileName} file name may be too long\n");
+                    File.AppendAllText("output.txt", $"Warning: {texture.fileName} file name may be too long\r\n");
                 }
                 if (texture is BitmapChecker bitmap && !BitmapChecker.ValidPixelFormat(bitmap))
                 {
-                    File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\n");
+                    File.AppendAllText("output.txt", $"Info: {bitmap.fileName} is {BitmapChecker.PixelFormat(bitmap)}\r\n");
                 }
                 if (texture is TargaChecker targa && !TargaChecker.Uncompressed(targa))
                 {
-                    File.AppendAllText("output.txt", $"Info: {targa.fileName} is {TargaChecker.CompressionType(targa)}\n");
+                    File.AppendAllText("output.txt", $"Info: {targa.fileName} is {TargaChecker.CompressionType(targa)}\r\n");
                 }
                 if (texture is DirectDrawChecker directDraw1 && !DirectDrawChecker.HasMipMaps(directDraw1))
                 {
-                    File.AppendAllText("output.txt", $"Info: {directDraw1.fileName} has no mip-maps\n");
+                    File.AppendAllText("output.txt", $"Info: {directDraw1.fileName} has no mip-maps\r\n");
                 }
                 if (texture is DirectDrawChecker directDraw2 && !DirectDrawChecker.IsCompressed(directDraw2))
                 {
-                     File.AppendAllText("output.txt", $"Info: {directDraw2.fileName} is uncompressed\n");
+                     File.AppendAllText("output.txt", $"Info: {directDraw2.fileName} is uncompressed\r\n");
                 }
-                File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\n");
+                File.AppendAllText("output.txt", "---------------------------------------------------------------------------------------------\r\n");
             }
         }
 
